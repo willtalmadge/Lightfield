@@ -1,0 +1,5 @@
+A python library used by the Spin Optics group in the University of Utah department of Physics.
+
+This python library communicates with a .NET server component installed in Lightfield via an XML over TCP protocol.
+
+It exposes limited functionality for a Pylon CCD combined with an SP2500 spectrometer.
