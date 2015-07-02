@@ -8,9 +8,10 @@ setup(name='lightfield',
       author_email='willtalmadge@gmail.com',
       license='MIT',
       packages=[
-          'lightfield_request',
+          'request',
       ],
       install_requires=[
-            'numpy'
+            'numpy',
+            'flask'
       ],
       zip_safe=False)

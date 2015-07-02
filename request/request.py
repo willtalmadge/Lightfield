@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as et
 import socket
 import base64
-
+import time
 import numpy
 
 
@@ -40,6 +40,27 @@ class LightFieldRequest:
         response_lfrq.process_request(response_xml)
         return response_lfrq
 
+def recv_timeout(the_socket,timeout=0.5):
+    the_socket.setblocking(0)
+    total_data=[];data='';begin=time.time()
+    while 1:
+        #if you got some data, then break after wait sec
+        if total_data and time.time()-begin>timeout:
+            break
+        #if you got no data at all, wait a little longer
+        elif time.time()-begin>timeout*2:
+            break
+        try:
+            data=the_socket.recv(8192)
+            if data:
+                total_data.append(data)
+                begin=time.time()
+            else:
+                time.sleep(0.1)
+        except:
+            pass
+    return b''.join(total_data)
+
 def xml_string_for_command(message):
     lfrq = LightFieldRequest(message)
     return lfrq.xml_string()
@@ -52,9 +73,10 @@ def open_lightfield_server(ip):
 def query_lightfield_server(ip, command_string, buffer_size=4096):
     lfs = open_lightfield_server(ip)
     lfs.send(xml_string_for_command(command_string))
-    response_xml = lfs.recv(buffer_size)
+    response_xml = recv_timeout(lfs)
     lfs.close()
     response_lfrq = LightFieldRequest()
+    print(response_xml)
     response_lfrq.process_request(response_xml)
     return response_lfrq
 
@@ -94,13 +116,18 @@ def set_central_wavelength(ip, wavelength_nm):
     command_lfrq = LightFieldRequest("SetCentralWavelength")
     command_lfrq.arguments['Wavelength_nm'] = ("%.4f" % wavelength_nm)
     command_lfrq.query_server(ip)
+
 def test():
-    print(capture_spectrum("192.168.1.77"))
-    w = get_current_calibration("192.168.1.77")
-    c = get_last_spectrum("192.168.1.77")
-    cm = numpy.dot(w, c)/numpy.sum(c)
-    skew = numpy.power(numpy.dot(numpy.power(w, 3), c)/numpy.sum(c), 1/3.0)
-    print(cm)
-    print(skew)
-    set_central_wavelength("192.168.1.77", skew)
-    capture_spectrum("192.168.1.77")
+    #print(capture_spectrum("192.168.1.87"))
+    w = get_current_calibration("192.168.1.87")
+    print(w)
+    #c = get_last_spectrum("192.168.1.87")
+    #cm = numpy.dot(w, c)/numpy.sum(c)
+    #skew = numpy.power(numpy.dot(numpy.power(w, 3), c)/numpy.sum(c), 1/3.0)
+    #print(cm)
+    #print(skew)
+    #set_central_wavelength("192.168.1.87", skew)
+    #capture_spectrum("192.168.1.87")
+
+if __name__ == '__main__':
+    test()
