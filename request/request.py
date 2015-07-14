@@ -76,7 +76,6 @@ def query_lightfield_server(ip, command_string, buffer_size=4096):
     response_xml = recv_timeout(lfs)
     lfs.close()
     response_lfrq = LightFieldRequest()
-    print(response_xml)
     response_lfrq.process_request(response_xml)
     return response_lfrq
 

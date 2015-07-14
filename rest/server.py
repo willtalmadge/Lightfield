@@ -6,10 +6,15 @@ from analysis import max_peak_location
 app = Flask(__name__)
 lightfield_server_ip = "192.168.1.87"
 
+@app.route('/lightfield_available')
+def lightfield_available():
+    return "true"
+
 @app.route('/set_lightfield_server_ip/<ip>')
 def set_lightfield_server_ip(ip):
     global lightfield_server_ip
     lightfield_server_ip = ip
+    return "ip set"
 
 @app.route('/cap_spec')
 def cap_spec():
@@ -26,4 +31,4 @@ def wavelength_at_max():
     return ("%.3f" % max_w)
 
 if __name__ == '__main__':
-    app.run(debug=True, host="192.168.1.95")
+    app.run(debug=True, host="192.168.1.87")
