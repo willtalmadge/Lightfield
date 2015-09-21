@@ -8,7 +8,9 @@ setup(name='lightfield',
       author_email='willtalmadge@gmail.com',
       license='MIT',
       packages=[
-          'request',
+          'lightfield.request',
+          'lightfield.rest',
+          'lightfield.analysis'
       ],
       install_requires=[
             'numpy',
